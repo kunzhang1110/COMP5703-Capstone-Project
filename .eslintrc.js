@@ -4,7 +4,8 @@ module.exports = {
     "browser": true,
     "commonjs": true,
     "es6": true,
-    "node": true
+    "node": true,
+    "jquery": true
   },
   "extends": ["eslint:recommended", "plugin:react/recommended"],
   "parserOptions": {
@@ -16,6 +17,7 @@ module.exports = {
   },
   "plugins": [ "react" ],
   "rules": {
+    "no-unused-vars": "off",
     "indent": ["error", 2],
     "linebreak-style": ["error","unix"],
     "quotes": ["error","single"],
