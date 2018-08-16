@@ -1,9 +1,24 @@
 import request from 'request';
 import gtfsRealtimeBindings from 'gtfs-realtime-bindings';
-import fs from 'fs';
-import dateFormat from 'dateformat';
+// import fs from 'fs';
+// import dateFormat from 'dateformat';
+import express from 'express';
+// import sassMiddleware from 'node-sass-middleware';
+import path from 'path';
+import bodyParser from 'body-parser'; //parsing POST body
+import config from './config';
 //var mysql = require('mysql');
 
+const server = express(); //create express server
+server.set('views', path.join(__dirname,'/src/views')); //set views
+server.set('view engine', 'ejs'); //use ejs files in view directory
+server.use(bodyParser.json());
+server.use(express.static(path.join(__dirname, '/public')));
+
+// routes
+server.get('/', (req, res) =>{
+  res.render('index');
+});
 
 // request URIs
 var apiUri = {
@@ -33,7 +48,7 @@ var options = {
 
 request(options,function(err, res, body){
   console.log('RESPONSE STATUS: ' + res.statusCode);
-  let testFileName = dateFormat(new Date(res.headers.date), 'yyyy-mm-dd-HH-MM-ss');
+  // let testFileName = dateFormat(new Date(res.headers.date), 'yyyy-mm-dd-HH-MM-ss');
   let feed = gtfsRealtimeBindings.FeedMessage.decode(body);
   feed.entity.forEach(function(entity) {
     if (entity.vehicle) {
@@ -50,4 +65,8 @@ request(options,function(err, res, body){
       // });
     }
   });
+});
+
+server.listen(config.port, config.host, () => {
+  console.info('Express listening on port ', config.port);
 });
