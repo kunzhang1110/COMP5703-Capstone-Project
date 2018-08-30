@@ -7,5 +7,5 @@ def db_connect(collection_name):
     print(mycollection)
     return mycollection
 
-def insert_trip(mycollection, data_entry):
+def insert_trip_db(mycollection, data_entry):
     mycollection.insert(data_entry)
