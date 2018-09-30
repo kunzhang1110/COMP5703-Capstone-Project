@@ -1,9 +1,11 @@
-create table real_time_test(
+drop table trip_update_all_sequence;
+
+create table trip_update_all_sequence(
 	entity_id nvarchar(50) not null,
-	timestamp int not null ,
+	timestamp int not null,
 	route_id nvarchar(50) not null,
 	trip_id nvarchar(50) not null,
-	start_time datetime2(7) null,
+	start_time nvarchar(50) null,
 	start_date nvarchar(50) not null,
 	trip_schedule_relationship int null,
 	stop_id  nvarchar(50)  not null,

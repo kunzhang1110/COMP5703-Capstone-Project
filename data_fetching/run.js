@@ -8,21 +8,21 @@ var TediousConnection = require('tedious').Connection;
 var TediousRequest = require('tedious').Request;
 var Request = require('request');
 var gtfsRealtimeBindings = require('gtfs-realtime-bindings');
-var Moment = require('moment');
+// var Moment = require('moment');
 var TYPES = require('tedious').TYPES;
 
 // Constants
 var COMP5703_SERVER_CONFIG = {
-  server: 'cp13.database.windows.net',
+  server: 'cp5703.database.windows.net',
   userName: 'cp13',
   password: 'COMP5703comp',
   options: {
     database: 'COMP5703',
     requestTimeout: 0, //no timeout
-    encrypt: true, //Set to true if on Windows Azure
+    encrypt: true, //set to true if on Windows Azure
   }
 };
-var TABLE_NAME = 'real_time_test';
+var TABLE_NAME = 'trip_update_all_sequence';
 var TABLE = '[dbo].['+TABLE_NAME+']';
 var API_URL = {
   realTimeTrip: 'https://api.transport.nsw.gov.au/v1/gtfs/realtime/',
@@ -38,7 +38,7 @@ var NULLABLE_COLUMNS = ['start_time', 'trip_schedule_relationship',
   'stop_schedule_relationship'];
 var NON_NULLABLE_COLUMNS = ['entity_id', 'timestamp', 'route_id', 'trip_id',
   'start_date', 'stop_id', 'stop_sequence', 'departure_time'];
-var STOP_SEQUENCE_SELECTION_NUMBER = 10;
+var STOP_SEQUENCE_SELECTION_NUMBER = 1000;
 var SYDNEY_TIME_OFFSET = 10 * 60 * 60; //UTC+10 in seconds
 
 // API URl variables
@@ -71,7 +71,7 @@ connection.on('connect', err => { //main function
       return getBulkLoad(TABLE);
     }).then(bl => {
       bulkLoad = bl;
-      saveToDatabase(bl, all_entity_rows);
+      saveToDatabase(bulkLoad, all_entity_rows);
     }).catch(err => {
       console.error(err);
     });
@@ -204,8 +204,7 @@ function processRows(_entity, _timestamp){
       }
 
       var trip_id = trip.trip_id;
-      var start_time = Moment(trip.start_time,'HH:mm:ss').toDate();
-      start_time.setHours(start_time.getHours() + 10); //Sydney UTC+10
+      var start_time = trip.start_time;
       var start_date = trip.start_date;
       var trip_schedule_relationship = trip.schedule_relationship;
       var route_id = trip.route_id;
@@ -234,16 +233,14 @@ function processRows(_entity, _timestamp){
           var stop_sequence = update.stop_sequence;
           var arrival = update.arrival;
           var arrival_delay = arrival.delay;
-
-
-          arrival.time.low += SYDNEY_TIME_OFFSET;
+          arrival.time.low += SYDNEY_TIME_OFFSET; // arrival time is long
           var arrival_time = arrival.time;
           var departure = update.departure;
           if(departure.time == null){ //departure_time cannot be null
             break;
           }
           var departure_delay = departure.delay;
-          departure.time.low += SYDNEY_TIME_OFFSET;
+          departure.time.low += SYDNEY_TIME_OFFSET; // departure time is long
           var departure_time = departure.time;
           let row = [entity_id, timestamp, route_id, trip_id, start_time, start_date,
             trip_schedule_relationship, stop_id, stop_sequence, arrival_delay,arrival_time,departure_delay,
@@ -283,7 +280,7 @@ function checkNull(_checkObject){
 * @param {Array} _all_entity_rows - List of all rows
 */
 function saveToDatabase(_bulkLoad, _all_entity_rows){
-  var counter = 0;
+  // var counter = 0;
   console.info('Start inserting to database');
   for (let i in _all_entity_rows){
     let entity_rows = _all_entity_rows[i];
@@ -291,37 +288,43 @@ function saveToDatabase(_bulkLoad, _all_entity_rows){
       let row = entity_rows[j];
 
       _bulkLoad.addRow(row);
-      counter ++;
-      if(counter > 200){
-        // console.log(counter)
-        break;
-      }
+      // counter ++;
+      // if(counter > 200){
+      //   // console.log(counter)
+      //   break;
+      // }
     }
   }
   connection.execBulkLoad(_bulkLoad);
 }
 
-/**
-* Convert a data type string to corresponding data type object defined in TYPES
-* @param {String} _dataTypeString - Data type string
-* @return {Object<TYPES>} Data type object
-*/
-function convertDataType(_dataTypeString){
-  let allTypeNames = Object.keys(TYPES);
-  let dataTypeObjectName = allTypeNames.find(function(element){
-    if(element.toLowerCase() === _dataTypeString)
-      return element;
-  });
-  return TYPES[dataTypeObjectName];
-}
+// /**
+// * Convert a data type string to corresponding data type object defined in TYPES
+// * @param {String} _dataTypeString - Data type string
+// * @return {Object<TYPES>} Data type object
+// */
+// function convertDataType(_dataTypeString){
+//   let allTypeNames = Object.keys(TYPES);
+//   let dataTypeObjectName = allTypeNames.find(function(element){
+//     if(element.toLowerCase() === _dataTypeString)
+//       return element;
+//   });
+//   return TYPES[dataTypeObjectName];
+// }
 
 /**
 * Show exeuction time on console
 * @param {int} _start - Start time for execution in millisencionds (2 digit precision)
-* @return {int} Execution time in millisencionds
+* @return {float} Execution time in minutes
 */
 function showExecutionTime(_start){
-  let execTime = Date.now() - _start;
-  console.info('Execution time is: ' + (execTime/60000).toFixed(2) + 'minutes' +
-  '('+ execTime + ' milliseconds' + ')');
+  let execTimeMillis = Date.now() - _start;
+  let execTimeMinutes = execTimeMillis/60000;
+  console.info('Execution time is: ' + execTimeMinutes.toFixed(2) + ' minute(s) ' +
+  '('+ execTimeMillis + ' ms' + ')');
+  return execTimeMinutes;
 }
+
+module.exports = {
+  showExecutionTime
+};

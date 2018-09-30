@@ -4,7 +4,8 @@ module.exports = {
     "commonjs": true,
     "es6": true,
     "node": true,
-    "jquery": true
+    "jquery": true,
+    "mocha": true
   },
   "parserOptions": {
     "ecmaFeatures": {
@@ -15,7 +16,12 @@ module.exports = {
   },
 	"extends": "eslint:recommended",
   "rules": {
-    "no-unused-vars": "off",
+    "no-unused-vars": [
+      "warn",
+      {
+        "varsIgnorePattern": "should|expect"
+      }
+    ],
     "indent": ["error", 2],
     "linebreak-style": ["error","unix"],
     "quotes": ["error","single"],
