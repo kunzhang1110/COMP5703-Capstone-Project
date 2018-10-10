@@ -1,6 +1,6 @@
-drop table trip_update_all_sequence;
+drop table trip_update_test;
 
-create table trip_update_all_sequence(
+create table trip_update_test(
 	entity_id nvarchar(50) not null,
 	timestamp int not null,
 	route_id nvarchar(50) not null,

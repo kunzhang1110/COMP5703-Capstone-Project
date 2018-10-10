@@ -4,8 +4,10 @@ DROP TABLE dbo.stop_sequence_avg_delay_desc;
 DROP TABLE dbo.stop_delay;
 DROP TABLE dbo.trip_delay;
 DROP TABLE dbo.route_delay;
+DROP TABLE dbo.route_delay_with_name;
 
--- Total -- 30s for 26360 rows single session
+
+-- Total -- 3:30s for 26360 rows single session
 
 -- Calculate Actual Delay
 SELECT
@@ -42,7 +44,7 @@ SELECT
 
  INTO dbo.real_time_actual_delay
  FROM dbo.trip_update_one_session as a
- LEFT JOIN dbo.stop_times as b
+ JOIN dbo.stop_times as b
  ON a.trip_id = b.trip_id AND a.stop_id = b.stop_id AND a.stop_sequence = b.stop_sequence
 
 -- 19s for 26360 rows
@@ -132,7 +134,6 @@ SELECT
   a.route_id,
   a.route_short_name,
   a.route_long_name,
-  a.route_desc,
 	b.delay_desc,
 	b.Percentage
 INTO dbo.route_delay_with_name

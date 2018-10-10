@@ -22,7 +22,7 @@ var COMP5703_SERVER_CONFIG = {
     encrypt: true, //set to true if on Windows Azure
   }
 };
-var TABLE_NAME = 'trip_update_all_sequence';
+var TABLE_NAME = 'trip_update_one_day';
 var TABLE = '[dbo].['+TABLE_NAME+']';
 var API_URL = {
   realTimeTrip: 'https://api.transport.nsw.gov.au/v1/gtfs/realtime/',
@@ -38,7 +38,7 @@ var NULLABLE_COLUMNS = ['start_time', 'trip_schedule_relationship',
   'stop_schedule_relationship'];
 var NON_NULLABLE_COLUMNS = ['entity_id', 'timestamp', 'route_id', 'trip_id',
   'start_date', 'stop_id', 'stop_sequence', 'departure_time'];
-var STOP_SEQUENCE_SELECTION_NUMBER = 1000;
+var STOP_SEQUENCE_SELECTION_NUMBER = 10;
 var SYDNEY_TIME_OFFSET = 10 * 60 * 60; //UTC+10 in seconds
 
 // API URl variables
