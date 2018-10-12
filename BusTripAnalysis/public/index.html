@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="https://getbootstrap.com/favicon.ico">
+    <title>Starter Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="./css/main.css" rel="stylesheet">
+    
+    
+</head>
+
+<body>
+	
+	<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="#">BusTrip</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+    	<span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+    	<ul class="navbar-nav mr-auto">
+        	<li class="nav-item active">
+            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+        	</li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+          	<input id="route" class="form-control mr-sm-2" type="text" placeholder="Route Name" aria-label="Search">
+          	<button id="routeSearchButton" class="btn btn-outline-success my-2 my-sm-0" type="button">Search</button>
+        </form>
+    </div>
+	</nav>
+    <main id="routeResult" style="display:none" role="main" class="container">
+	  	<h1 id="routeName" class="starter-template"></h1>
+	  	<div id="mapInfo">
+	  		<div id="stops">
+	  			<div id="stopTitle">Stops <button id="routeDirectionButton" value=0 class="btn btn-outline-success my-2 my-sm-0" type="button">Change Direction</button></div>
+	  			<div id="stopNames" class=""></div>
+	  		</div> 
+      		<div id="map"></div>
+      	</div>
+    </main>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/js/jquery-3.1.1.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB3MRNDBnVd6yeYX13nJLBHCyqtLdUrgYo&callback=initMap">
+    </script>
+    <script src="/js/routeInformation.js"></script>
+
+</body>
+</html>

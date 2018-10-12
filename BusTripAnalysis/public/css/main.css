@@ -1,0 +1,71 @@
+body {
+  	padding-top: 5rem;
+  	background-color: #F0F0F0
+}
+.starter-template {
+  	padding: 3rem 1.5rem;
+  	text-align: center;
+}
+
+#routeName {
+	background-color: #FFFFFF;
+	text-align: center;
+	padding: 2%
+}
+
+#mapInfo {
+	background-color: #FFFFFF;
+	height: 500px
+}
+
+#map {
+	float: right;
+	height: 92%;
+  	width: 56%;
+  	margin: 2% 2% 2% 0
+}
+
+#stops {
+	float: left;
+	overflow-y: scroll;
+	background-color: #F9F9F9;
+	height: 92%;
+  	width: 40%;
+  	margin: 2% 0 2% 2%
+}
+
+#stopTitle {
+	height: 12%;
+	font-size: 200%;
+	margin: 4%
+}
+
+#routeDirectionButton {
+	float: right;
+	margin: 20% 2% 2% 2%
+}
+
+.stopName {
+	height: 12%;
+	background-color: #FFFFFF;
+	font-size: 90%;
+	padding: 4%;
+	margin: 2%;
+	border-left: solid DeepSkyBlue;
+	cursor: pointer
+}
+
+.stopDelay {
+	display: none
+    background-color: #F9F9F9;
+    height: 12%;
+    font-size: 90%;
+    padding: 4%;
+	margin: 2%;
+    border-left: solid DeepSkyBlue;
+    cursor: pointer
+}
+
+.stopName:click + .stopDelay {
+    display: block;
+}

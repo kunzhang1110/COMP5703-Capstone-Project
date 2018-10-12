@@ -1,0 +1,23 @@
+{
+  "name": "bustripanalysis",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "async": "^2.6.1",
+    "cookie-parser": "~1.4.3",
+    "ejs": "^2.6.1",
+    "express": "~4.16.0",
+    "inspect": "0.0.2",
+    "morgan": "~1.9.0",
+    "mssql": "^4.1.0",
+    "tedious": "^2.6.4"
+  },
+  "main": "app.js",
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {},
+  "description": ""
+}
