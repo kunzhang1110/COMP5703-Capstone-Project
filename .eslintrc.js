@@ -7,21 +7,24 @@ module.exports = {
     "node": true,
     "jquery": true
   },
-  "extends": ["eslint:recommended", "plugin:react/recommended"],
+  "extends": ["eslint:recommended",],
   "parserOptions": {
     "ecmaFeatures": {
       "experimentalObjectRestSpread": true,
-      "jsx": true
     },
     "sourceType": "module"
   },
-  "plugins": [ "react" ],
   "rules": {
-    "no-unused-vars": "off",
-    "indent": ["error", 2],
-    "linebreak-style": ["error","unix"],
-    "quotes": ["error","single"],
-    "semi": ["error","always"],
+    "no-unused-vars": [
+      "warn",
+      {
+        "varsIgnorePattern": "should|expect"
+      }
+    ],
+    "indent": ["warn", 2],
+    "linebreak-style": ["warn","unix"],
+    "quotes": ["warn","single"],
+    "semi": ["warn","always"],
     "no-console": ["warn", { "allow": ["info", "error"] }]
   }
 };
