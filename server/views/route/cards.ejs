@@ -2,11 +2,37 @@
 <div class="row">
   <!-- Route Title -->
   <%- include('./title') -%>
-  <%- include('./info', {info_title: "Network", info_content:bus.route_desc}) -%>
-  <%- include('./info', {info_title: "Operator", info_content:bus.agency_name}) -%>
-  <%- include('./delay',{delay_title: "Early", delay_percentage:bus.early_percentage}) -%>
-  <%- include('./delay',{delay_title: "On-time", delay_percentage:bus.ontime_percentage}) -%>
-  <%- include('./delay',{delay_title: "Late", delay_percentage:bus.late_percentage}) -%>
-  <%- include('./delay',{delay_title: "Very Late", delay_percentage:bus.verylate_percentage}) -%>
+  <div class="col-xl-6 col-sm-12 mb-3">
+    <div class="card text-secondary bg-light o-hidden h-100">
+      <div class="card-header">
+        <div class="mr-5">Network</div>
+      </div>
+      <div class="card-body">
+        <div class="card-body-icon">
+          <i class="fas fa-fw fa-comments"></i>
+        </div>
+        <span class="float-left"><%= bus.route_desc %></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-6 col-sm-12 mb-3">
+    <div class="card text-secondary bg-light o-hidden h-100">
+      <div class="card-header">
+        <div class="mr-5">Operator</div>
+      </div>
+      <div class="card-body">
+        <div class="card-body-icon">
+          <i class="fas fa-fw fa-comments"></i>
+        </div>
+        <span class="float-left"><%= bus.agency_name %></span>
+      </div>
+    </div>
+  </div>
+
+  <%- include('./delay') -%>
+
+
+
 
 </div><!-- end of icon cards -->

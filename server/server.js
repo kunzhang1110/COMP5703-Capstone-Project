@@ -1,5 +1,5 @@
 import express from 'express';
-import sassMiddleware from 'node-sass-middleware';
+// import sassMiddleware from 'node-sass-middleware';
 import path from 'path';
 import bodyParser from 'body-parser';
 import config from './config';
@@ -7,10 +7,10 @@ import router from './routes/router.js';
 
 const SERVER = express();
 
-SERVER.use(sassMiddleware({
-  src: path.join(__dirname, 'sass'),
-  dest: path.join(__dirname, '..', 'public')
-}));  //compile scss
+// SERVER.use(sassMiddleware({
+//   src: path.join(__dirname, 'sass'),
+//   dest: path.join(__dirname, '..', 'public')
+// }));  //compile scss
 
 SERVER.use(bodyParser.json());
 SERVER.use(express.static(path.join( __dirname,'..', 'public')));
@@ -19,9 +19,7 @@ SERVER.use(express.static(path.join( __dirname,'..', 'public')));
 SERVER.set('views', path.join(__dirname, 'views'));
 SERVER.set('view engine', 'ejs');
 
-SERVER.get('/', (req, res) => {
-  res.render('index'); //index.ejs
-});
+
 
 SERVER.use('/',router);
 
