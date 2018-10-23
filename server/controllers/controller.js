@@ -36,7 +36,6 @@ export const displayOverviewPage = function (req, res){
 
 export const getStopDist = function (req, res){
   model.getStopDist().then(results => {
-
     console.log(results)
     const FAKE_DATA = [['20181002', 26, 699, 33 ,12 ], ['20181003', 26, 232, 58 ,60 ]]
     results = FAKE_DATA;
@@ -46,14 +45,18 @@ export const getStopDist = function (req, res){
 
 
 export const getRouteMap = function (req, res){
-  model.getRouteMap().then(results => {
-    console.info(results);
-    res.send(results);
+	var route = req.query.route;
+	var direction = req.query.direction;
+  model.getRouteMap(route, direction).then(results => {
+	  console.info(results)
+      res.send(results);
   }).catch(error => console.error(error));
 };
 
 export const getStop = function (req, res){
-  model.getStop().then(results => {
+	var stopId = req.query.stopId;
+  model.getStop(stopId).then(results => {
+	console.info(results);
     res.send(results);
   }).catch(error => console.error(error));
 };

@@ -2,7 +2,8 @@ var webpack = require('webpack');
 
 module.exports = {
   entry: {route: './client/route.js',
-    overview: './client/overview.js'
+    overview: './client/overview.js',
+    routeInformation: './client/routeInformation.js'
   },
   output: {
     path: __dirname + '/public',

@@ -1,5 +1,6 @@
 import tp from '../models/db';
 
+var TYPES = require('tedious').TYPES;
 
 const ROUTE_TABLE_NAME = 'dbo.route_delay_with_name';
 const STOP_DIST_NAME = 'dbo.web_stop_dist';
@@ -19,19 +20,20 @@ export const getRoute = function () {
 };
 
 
-
-
 //TODO: prejoin table
-export const getRouteMap = function () {
-  let sql = 'select stops.stop_id as stopId, stops.stop_lat as lat, stops.stop_lon as lon, stops.stop_name as name, stop_times.stop_sequence as sequence from (select top 1 routes.route_short_name, trips.trip_id, trips.direction_id from routes join trips on routes.route_id = trips.route_id where routes.route_short_name = @route and trips.direction_id = @direction) as A join stop_times on A.trip_id = stop_times.trip_id join stops on stop_times.stop_id = stops.stop_id order by sequence';
+export const getRouteMap = function (route, direction) {
+  let sql = 'select TT_0925_stops.stop_id as stopId, TT_0925_stops.stop_lat as lat, TT_0925_stops.stop_lon as lon, TT_0925_stops.stop_name as name, TT_0925_stop_times.stop_sequence as sequence from (select top 1 TT_0925_routes.route_short_name, TT_0925_trips.trip_id, TT_0925_trips.direction_id from TT_0925_routes join TT_0925_trips on TT_0925_routes.route_id = TT_0925_trips.route_id where TT_0925_routes.route_short_name = @route and TT_0925_trips.direction_id = @direction) as A join TT_0925_stop_times on A.trip_id = TT_0925_stop_times.trip_id join TT_0925_stops on TT_0925_stop_times.stop_id = TT_0925_stops.stop_id order by sequence';
 
   return tp.sql(sql)
+    .parameter('route', TYPES.NVarChar, route)
+    .parameter('direction', TYPES.Int, direction)
     .execute();
 };
 
 
-export const getStop = function () {
-  let sql = 'select stops.stop_name as name, stop_delay.delay_desc as type, stop_delay.percentage as p from stops join stop_delay on stops.stop_id = stop_delay.stop_id where stops.stop_id = @stopId';
+export const getStop = function (stopId) {
+  let sql = 'select TT_0925_stops.stop_name as name, stop_delay.delay_desc as type, stop_delay.percentage as p from TT_0925_stops join stop_delay on TT_0925_stops.stop_id = stop_delay.stop_id where TT_0925_stops.stop_id = @stopId';
   return tp.sql(sql)
+    .parameter('stopId', TYPES.NVarChar, stopId)
     .execute();
 };

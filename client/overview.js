@@ -138,6 +138,7 @@ function getStopDist(event){
   event.preventDefault();
   $.get('/getStopDist', results=>{
   //  const FAKE_DATA = [['20181002', 26, 699, 33 ,12 ], ['20181003', 26, 232, 58 ,60 ]]
+	
     let data = results;
     drawDistColumn(data)
   });
