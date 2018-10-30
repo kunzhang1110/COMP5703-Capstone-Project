@@ -1,0 +1,44 @@
+<!-- Route Delay Description -->
+<div class="col-xl-4 col-sm-12 mb-3" id="early_percentage">
+  <div class="card o-hidden h-100 text-light bg-primary">
+    <div class="card-header">
+      <div class="mr-5">Early</div>
+    </div>
+    <div class="card-body">
+      <div class="card-body-icon">
+        <i class="fa fa-backward"></i>
+      </div>
+      <span class="float-left"><%= bus.early_percentage_string %></span>
+    </div>
+  </div>
+</div>
+
+<div class="col-xl-4 col-sm-12 mb-3" id="ontime_percentage">
+  <div class="card o-hidden h-100 text-light bg-success">
+    <div class="card-header">
+      <div class="mr-5">On-time</div>
+    </div>
+    <div class="card-body">
+      <div class="card-body-icon">
+        <i class="fa fa-play"></i>
+      </div>
+      <span class="float-left"><%= bus.ontime_percentage_string %></span>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="col-xl-4 col-sm-12 mb-3">
+  <div class="card o-hidden h-100 text-light bg-danger" id="late_percentage">
+    <div class="card-header">
+      <div class="mr-5">Very Late</div>
+    </div>
+    <div class="card-body">
+      <div class="card-body-icon">
+        <i class="fa fa-fast-forward"></i>
+      </div>
+      <span class="float-left"><%= bus.late_percentage_string %></span>
+    </div>
+  </div>
+</div>

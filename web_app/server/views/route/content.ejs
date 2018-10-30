@@ -1,0 +1,25 @@
+<div id="content-wrapper">
+   <div class="container-fluid">
+
+     <%- include('./breadcrumb') -%>
+     <%- include('./cards') -%>
+     <%- include('./pie') -%>
+
+     <div class="row">
+      	<div class="col-xl-12 col-sm-12 mb-3">
+    		<div class="card text-secondary bg-light o-hidden h-100">
+      			<div class="card-header">
+        			<div class="mr-5">Stops<button id="routeDirectionButton" value=0 class="btn btn-rounded btn-primary my-0" type="button">Change Direction</button></div>
+      			</div>
+      			<div class="card-body" id="mapInfo">
+	  				<div id="stops">
+	  					<div id="stopNames" class=""></div>
+	  				</div>
+      				<div id="map"></div>
+      			</div>
+    		</div>
+  		</div>
+     </div>
+
+   </div>
+</div>

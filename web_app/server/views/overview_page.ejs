@@ -1,0 +1,21 @@
+<% var section_head_info = {
+  title: 'Overview',
+  description: 'A glance at all Sydeny Buses'
+  }
+%>
+
+<%- include('header') -%>
+<%- include('navbar') -%>
+<div id="wrapper">
+  <%- include('sidebar') -%>
+  <div id="content-wrapper">
+     <div class="container-fluid">
+      <%- include('section_head', {section_head_info : section_head_info}) -%>
+      <%- include('./overview/dist') -%>
+      <%- include('./overview/trend') -%>
+      <%- include('./overview/box') -%>
+
+     </div>
+  </div>
+</div>
+<%- include('footer', {js_name: 'overview.js'}) -%>
