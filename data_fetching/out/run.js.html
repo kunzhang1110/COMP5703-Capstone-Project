@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: run.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: run.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>
+/**
+ * Data Fetching Script
+ *
+ */
+
+var TediousConnection = require('tedious').Connection;
+var TediousRequest = require('tedious').Request;
+var Request = require('request');
+var gtfsRealtimeBindings = require('gtfs-realtime-bindings');
+var Moment = require('moment');
+var TYPES = require('tedious').TYPES;
+
+// Constants
+var COMP5703_SERVER_CONFIG = {
+  server: 'cp13.database.windows.net',
+  userName: 'cp13',
+  password: 'COMP5703comp',
+  options: {
+    database: 'COMP5703',
+    requestTimeout: 0, //no timeout
+    encrypt: true, //Set to true if on Windows Azure
+  }
+};
+var TABLE_NAME = 'trip_updates_raw';
+var TABLE = '[dbo].['+TABLE_NAME+']';
+var API_URL = {
+  realTimeTrip: 'https://api.transport.nsw.gov.au/v1/gtfs/realtime/',
+  realTimeVehicle: 'https://api.transport.nsw.gov.au/v1/gtfs/vehiclepos/'
+};
+var TRANSPORT_TYPE_URI = {
+  bus : 'buses',
+  lightRail : 'lightrail',
+  ferries: 'ferries'
+};
+
+// API URl variables
+var url = API_URL.realTimeTrip + TRANSPORT_TYPE_URI.bus;
+var options = {
+  url:url,
+  method:'GET',
+  encoding: null,
+  headers:{
+    'Connection': 'keep-alive',
+    'Api-User-Agent': 'Example/1.0',
+    'Authorization': 'apikey vTeeyq2hCQQRHF8sEey4hyWaNXz7ffWqEBh2'
+  }
+};
+var execution_start_time = Date.now();
+
+// Define connection
+var connection = new TediousConnection(COMP5703_SERVER_CONFIG);
+connection.on('connect', err => { //main function
+  var all_entity_rows;
+  var bulkLoad;
+
+  if (err){
+    console.error(err);
+  }else {
+    console.info('Database Connected');
+
+    getData().then(data => {
+      all_entity_rows = data;
+      return getBulkLoad(TABLE);
+    }).then(bl => {
+      bulkLoad = bl;
+      saveToDatabase(bl, all_entity_rows);
+    }).catch(err => {
+      console.error(err);
+    });
+  }
+});
+
+/**
+* Read metadata of existing table and return corresponding bulkLoad object on resolve
+* @async
+* @return {Promise&lt;BulkLoad>} BulkLoad object on resolve
+*/
+function getBulkLoad(_table){
+  return new Promise((resolve, reject) => {
+    var bl;
+    // make a dummy request
+    let sql = 'SELECT TOP(1) * FROM ' + _table;
+    let request = new TediousRequest(
+      sql,
+      function(err, rowCount, rows){
+        if(!err){
+          // console.info(rowCount + ' row(s) returned');
+          resolve(bl);
+        }else{
+          reject(err);
+        }
+      });
+
+    // retrive metadata of the table and set bulkLoad
+    request.on('columnMetadata', function (columns) {
+      bl = setBulkLoad(columns);
+    });
+
+    connection.execSql(request);
+  });
+}
+
+/**
+* Set all columns of bulkLoad
+* @param {Array&lt;Column>} columns - Array of column metadata Objects
+* @return {Bulkload} Buckload Object with column metadata
+*/
+function setBulkLoad(columns){
+  let bl = connection.newBulkLoad(TABLE,
+    function (err, rowCount) { //bulckLoad on completion callback
+      if(!err){
+        console.info('inserted %d rows', rowCount);
+        showExecutionTime(execution_start_time);
+        process.exit(0);
+      }else{
+        console.error(err);
+      }
+    });
+
+  // add column metadata to bulkLoad
+  for (let i = 0; i&lt; columns.length; i++){
+    let dataType = columns[i].type; //convert data type string to TYPE object
+    let colName = columns[i].colName;
+    bl.addColumn(colName ,dataType);  //column name and
+  }
+
+  //set nullability
+  bl.columnsByName['vehicle_id'].nullable = true; //vehicle_id can be nullable
+  return bl;
+}
+
+/**
+* Get data from Transport Opendata and flatten them
+* @async
+* @return {Promise&lt;Array&lt;Array&lt;row>>>} All flattened rows in a nested array
+*/
+function getData(){
+  return new Promise((resolve,reject) =>{
+    var all_entity_rows = [];
+    Request(options,function(err, response, body){
+      if (!err){
+        console.info('OPENDATA RESPONSE STATUS: ' + response.statusCode);
+        var feed_message = gtfsRealtimeBindings.FeedMessage.decode(body);
+        var timestamp = feed_message.header.timestamp;
+        for (let i in feed_message.entity){
+          var entity = feed_message.entity[i];
+          var entity_rows = processRows(entity, timestamp);
+          if (entity_rows){
+            all_entity_rows.push(entity_rows);
+          }
+        }
+        resolve(all_entity_rows);
+      }else{
+        reject(err);
+      }
+    });
+  });
+}
+
+/**
+* Get data from Transport Opendata and flatten them
+* @param {Object&lt;entity>} _entity - Single entity Object
+* @param {uint64} _timestamp - Feed message timestamp
+* @return {Promise&lt;Array&lt;Array&lt;row>>>} All flattened rows in a nested array
+*/
+function processRows(_entity, _timestamp){
+  var timestamp = _timestamp;
+  var entity_rows = [];
+  if(_entity.trip_update &amp;&amp; _entity.id){
+    var entity_id = _entity.id;
+    var trip_update = _entity.trip_update;
+    if (trip_update.trip){  //trip_update must have a trip
+      var trip = trip_update.trip;
+      // check vehicle field exists
+      var vehicle_id; // can be null
+      if(trip_update.vehicle){
+        vehicle_id = trip_update.vehicle.id;
+      }
+      //check fields in a trip are all non-null except for 'direction_id'
+      var tripKeyArray = Object.keys(trip);
+      for(let i=0;  i&lt;tripKeyArray.length; i++){
+        let keyName = tripKeyArray[i];
+        let valueName = trip[tripKeyArray[i]];
+        if (keyName == 'direction_id'){
+          continue;
+        }
+        if (valueName == null){
+          return null;
+        }
+      }
+      var trip_id = trip.trip_id;
+      var start_time = Moment(trip.start_time,'HH:mm:ss').toDate();
+      start_time.setHours(start_time.getHours() + 10); //Sydney UTC+10
+      var start_date = trip.start_date;
+      var trip_schedule_relationship = trip.schedule_relationship;
+      var route_id = trip.route_id;
+
+      //check stop_time_update
+      if (trip_update.stop_time_update){
+        var stop_time_updates = trip_update.stop_time_update;
+      } else{
+        return null;
+      }
+
+      //flatten each trip_update
+      for (let x in stop_time_updates){
+        let update = stop_time_updates[x];
+        if(checkUpdate(update) == false){
+          break;
+        }else{
+          var stop_id = update.stop_id;
+          var schedule_relationship = update.schedule_relationship;
+          var stop_sequence = update.stop_sequence;
+          var arrival = update.arrival;
+          var arrival_delay = arrival.delay;
+          var arrival_time = arrival.time;
+          var departure = update.departure;
+          var departure_delay = departure.delay;
+          var departure_time = departure.time;
+          let row = [entity_id, timestamp, trip_id, start_time, start_date,
+            trip_schedule_relationship, stop_sequence, arrival_delay,arrival_time,departure_delay,
+            route_id, vehicle_id, departure_time, stop_id, schedule_relationship];
+          entity_rows.push(row);
+        }
+      } // END flatten each trip_update
+      return entity_rows;
+    }
+  }
+}
+
+/**
+* check fields in a update are all non-null
+* @param {Object&lt;stop_time_update>} _update - Single stop_time_update object
+* @return {Boolean} True if all fields are non-null
+*/
+function checkUpdate(_update){
+
+  var updateKeyArray = Object.keys(_update);
+  for(let i=0;  i&lt;updateKeyArray.length; i++){
+    let keyName = updateKeyArray[i];
+    let valueName = _update[updateKeyArray[i]];
+    if (valueName == null){
+      return false;
+    }
+  }
+  return true;
+}
+
+
+/**
+* Save all rows into database with bulkLoad
+* @param {Object&lt;Bulkload>} _bulkLoad - Configured Buckload Object
+* @param {Array} _all_entity_rows - List of all rows
+*/
+function saveToDatabase(_bulkLoad, _all_entity_rows){
+
+  console.info('Start inserting to database');
+  for (let i in _all_entity_rows){
+    let entity_rows = _all_entity_rows[i];
+    for (let j in entity_rows){
+      let row = entity_rows[j];
+      _bulkLoad.addRow(row);
+    }
+  }
+  connection.execBulkLoad(_bulkLoad);
+}
+
+/**
+* Convert a data type string to corresponding data type object defined in TYPES
+* @param {String} _dataTypeString - Data type string
+* @return {Object&lt;TYPES>} Data type object
+*/
+function convertDataType(_dataTypeString){
+  let allTypeNames = Object.keys(TYPES);
+  let dataTypeObjectName = allTypeNames.find(function(element){
+    if(element.toLowerCase() === _dataTypeString)
+      return element;
+  });
+  return TYPES[dataTypeObjectName];
+}
+
+/**
+* Show exeuction time on console
+* @param {int} _start - Start time for execution in millisencionds (2 digit precision)
+* @return {int} Execution time in millisencionds
+*/
+function showExecutionTime(_start){
+  let execTime = Date.now() - _start;
+  console.info('Execution time is: ' + (execTime/60000).toFixed(2) + 'minutes' +
+  '('+ execTime + ' milliseconds' + ')');
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#checkUpdate">checkUpdate</a></li><li><a href="global.html#convertDataType">convertDataType</a></li><li><a href="global.html#getBulkLoad">getBulkLoad</a></li><li><a href="global.html#getData">getData</a></li><li><a href="global.html#processRows">processRows</a></li><li><a href="global.html#saveToDatabase">saveToDatabase</a></li><li><a href="global.html#setBulkLoad">setBulkLoad</a></li><li><a href="global.html#showExecutionTime">showExecutionTime</a></li><li><a href="global.html#TediousConnection">TediousConnection</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Sep 16 2018 11:18:04 GMT+1000 (AUS Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
