@@ -26,9 +26,9 @@ var _router2 = _interopRequireDefault(_router);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// import sassMiddleware from 'node-sass-middleware';
 var SERVER = (0, _express2.default)();
 
+// import sassMiddleware from 'node-sass-middleware';
 // SERVER.use(sassMiddleware({
 //   src: path.join(__dirname, 'sass'),
 //   dest: path.join(__dirname, '..', 'public')

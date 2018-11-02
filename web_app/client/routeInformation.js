@@ -17,7 +17,7 @@ function drawPieChart() {
     title: 'Distribution of Delay',
     is3D: true,
     slices: {
-      1: {offset: 0.5, color: 'green', textStyle:{fontSize:25}},
+      1: {offset: 0.2, color: 'green', textStyle:{fontSize:25}},
       2: {color: 'red'}
     }
   };
@@ -28,58 +28,34 @@ function drawPieChart() {
 
 
 $(function() {
-	$('#nav-bar-button').click(function(event){
-	    getRoute(event, '#nav-bar-input');
-	  });
+  if($('#route').text() == '891'|| $('#route').text() == 'X04'||
+$('#route').text() == '725e'|| $('#route').text() == '699w'){//891, X04 are one-way services
+    $('#routeDirectionButton').attr('disabled', true);
+  }else{
+    $('#routeDirectionButton').attr('disabled', false);
+  }
 
-  // Toggle the side navigation
-  $('#sidebarToggle').on('click',function(e) {
-    e.preventDefault();
-    $('body').toggleClass('sidebar-toggled');
-    $('.sidebar').toggleClass('toggled');
+
+  $('#routeDirectionButton').click(function(){
+    var direction = $('#routeDirectionButton').val();
+    direction = (direction==0) ? 1 : 0;
+    $('#routeDirectionButton').val(direction);
+    showMap();
   });
-
-//  $('#mapInfo').load(function(event){
-//	  showMap(event);
-//    });
-
-  $("#routeDirectionButton").click(function(){
-		var direction = $("#routeDirectionButton").val();
-		direction = (direction==0) ? 1 : 0;
-		$("#routeDirectionButton").val(direction);
-		showMap();
-	});
-
-  // Prevent the content wrapper from scrolling when the fixed side navigation hovered over
-  $('body.fixed-nav .sidebar').on('mousewheel DOMMouseScroll wheel', function(e) {
-    if ($(window).width() > 768) {
-      var e0 = e.originalEvent,
-        delta = e0.wheelDelta || -e0.detail;
-      this.scrollTop += (delta < 0 ? 1 : -1) * 30;
-      e.preventDefault();
-    }
-  });
-
 });
 
 /* Auxilary function
 */
-function getRoute(event,textString){
-	  event.preventDefault();
-	  let route_short_name = $(textString)[0].value;
-	  window.location.href='/getRoute?route_short_name=' + route_short_name;
-}
-
 function convertToFloat(selector){
   return parseFloat($(selector).text().slice(0,5));
 }
 
 function showMap(){
-	var route = $("#route").text();
-    var direction = $("#routeDirectionButton").val();
-    $.get('/routemap', {'route':route, 'direction':direction}, results=>{
-    	 mapHandler(results);
-    });
+  var route = $("#route").text();
+  var direction = $("#routeDirectionButton").val();
+  $.get('/routemap', {'route':route, 'direction':direction}, results=>{
+    mapHandler(results);
+  });
 }
 
 function mapHandler(results){

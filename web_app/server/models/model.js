@@ -2,7 +2,7 @@ import tp from '../models/db';
 
 var TYPES = require('tedious').TYPES;
 
-const ROUTE_TABLE_NAME = 'dbo.route_delay_with_name';
+const ROUTE_TABLE_NAME = 'dbo.web_route_delay_with_name';
 const STOP_DIST_NAME = 'dbo.py15_stop_performance';
 const TRIP_DIST_NAME = 'dbo.py15_trip_performance';
 const ROUTE_DIST_NAME = 'dbo.py15_route_performance';

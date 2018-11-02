@@ -12,7 +12,7 @@ SELECT
   b.route_performance
 INTO dbo.web_route_delay_with_name
 FROM dbo.routes as a
-JOIN dbo.py_route_performance as b
+JOIN dbo.py15_route_performance as b
 ON  a.route_id = b.route_id
 JOIN dbo.agency as c
 ON a.agency_id = c.agency_id

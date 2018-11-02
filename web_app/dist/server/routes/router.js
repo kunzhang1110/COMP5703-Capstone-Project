@@ -24,6 +24,9 @@ router.get('/routemap', controller.getRouteMap);
 router.get('/stop', controller.getStop);
 router.get(['/', '/overview'], controller.displayOverviewPage);
 router.get('/getStopDist', controller.getStopDist);
+router.get('/getTripDist', controller.getTripDist);
+router.get('/getRouteDist', controller.getRouteDist);
+router.get('/predictive', controller.displayPredictivePage);
 router.get('/about', controller.displayAboutPage);
 
 exports.default = router;

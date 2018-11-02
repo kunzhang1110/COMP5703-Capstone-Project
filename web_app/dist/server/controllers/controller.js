@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getStop = exports.getRouteMap = exports.getStopDist = exports.displayOverviewPage = exports.getRoute = exports.displayAboutPage = exports.displayRouteMainPage = undefined;
+exports.getStop = exports.getRouteMap = exports.getRouteDist = exports.getTripDist = exports.getStopDist = exports.displayOverviewPage = exports.getRoute = exports.displayPredictivePage = exports.displayAboutPage = exports.displayRouteMainPage = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -23,6 +23,10 @@ var displayRouteMainPage = exports.displayRouteMainPage = function displayRouteM
 
 var displayAboutPage = exports.displayAboutPage = function displayAboutPage(req, res) {
   res.render('about_page');
+};
+
+var displayPredictivePage = exports.displayPredictivePage = function displayPredictivePage(req, res) {
+  res.render('predictive_page');
 };
 
 var getRoute = exports.getRoute = function getRoute(req, res) {
@@ -49,17 +53,64 @@ var displayOverviewPage = exports.displayOverviewPage = function displayOverview
 
 var getStopDist = exports.getStopDist = function getStopDist(req, res) {
   model.getStopDist().then(function (results) {
+    var arrayAll = new Array();
+    results.forEach(function (result, index) {
+      var start_date = new Date(result.start_date);
+      var dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+      var start_date_localeString = start_date.toLocaleString('en-US', dateOptions);
+      var start_date_string = start_date_localeString.slice(5, 11) + '\n' + start_date_localeString.slice(0, 3);
+      var array = [start_date_string, result.early, result.on_time, result.late, result.Very_late];
+      arrayAll.push(array);
+    });
 
-    console.log(results);
-    var FAKE_DATA = [['20181002', 26, 699, 33, 12], ['20181003', 26, 232, 58, 60]];
-    results = FAKE_DATA;
-    res.send(results);
+    res.send(arrayAll); //JSON format
+  });
+};
+
+var getTripDist = exports.getTripDist = function getTripDist(req, res) {
+  model.getTripDist().then(function (results) {
+    var arrayAll = new Array();
+    results.forEach(function (result, index) {
+      var start_date = new Date(result.start_date);
+      var dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+      var start_date_localeString = start_date.toLocaleString('en-US', dateOptions);
+      var start_date_string = start_date_localeString.slice(5, 11) + '\n' + start_date_localeString.slice(0, 3);
+      var array = [start_date_string, result.trip_early, result.trip_ontime, result.trip_late, 0];
+      arrayAll.push(array);
+    });
+
+    res.send(arrayAll); //JSON format
+  });
+};
+
+var getRouteDist = exports.getRouteDist = function getRouteDist(req, res) {
+  model.getRouteDist().then(function (results) {
+    var arrayAll = new Array();
+    results.forEach(function (result, index) {
+      var start_date = new Date(result.start_date);
+      var dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+      var start_date_localeString = start_date.toLocaleString('en-US', dateOptions);
+      var start_date_string = start_date_localeString.slice(5, 11) + '\n' + start_date_localeString.slice(0, 3);
+      var array = [start_date_string, result.route_early, result.route_ontime, result.route_late, 0];
+
+      // //remove the last day
+      // if(index != (results.length-1)){
+      //   arrayAll.push(array);
+      // }
+
+      //keep all days
+      arrayAll.push(array);
+    });
+
+    res.send(arrayAll); //JSON format
   });
 };
 
 var getRouteMap = exports.getRouteMap = function getRouteMap(req, res) {
-  model.getRouteMap().then(function (results) {
-    console.info(results);
+  var route = req.query.route;
+  var direction = req.query.direction;
+  model.getRouteMap(route, direction).then(function (results) {
+    // console.info(results);
     res.send(results);
   }).catch(function (error) {
     return console.error(error);
@@ -67,7 +118,9 @@ var getRouteMap = exports.getRouteMap = function getRouteMap(req, res) {
 };
 
 var getStop = exports.getStop = function getStop(req, res) {
-  model.getStop().then(function (results) {
+  var stopId = req.query.stopId;
+  model.getStop(stopId).then(function (results) {
+    // console.info(results);
     res.send(results);
   }).catch(function (error) {
     return console.error(error);

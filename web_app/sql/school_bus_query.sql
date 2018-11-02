@@ -1,0 +1,10 @@
+SELECT  [route_id]
+      ,[agency_id]
+      ,[route_short_name]
+      ,[route_long_name]
+      ,[route_desc]
+      ,[route_type]
+      ,[route_color]
+      ,[route_text_color]
+  FROM [dbo].[TT_1008_routes]
+  where route_desc = 'School Buses' AND route_long_name LIKE '%Artarmon%'
