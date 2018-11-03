@@ -32,17 +32,32 @@ var displayPredictivePage = exports.displayPredictivePage = function displayPred
 var getRoute = exports.getRoute = function getRoute(req, res) {
   var route_short_name = req.query.route_short_name;
   model.getRoute().then(function (results) {
-    var result = results.find(function (x) {
-      return x.route_short_name === route_short_name;
-    });
+    if (results != null) {
+      var result = results.find(function (x) {
+        return x.route_short_name === route_short_name;
+      });
 
-    console.info(result);
-    result = _extends({}, result, {
-      early_percentage_string: getPercentage(result.early_percentage),
-      ontime_percentage_string: getPercentage(result.ontime_percentage),
-      late_percentage_string: getPercentage(result.late_percentage)
-    });
-    res.render('route_page', { bus: result }); //index.ejs
+      if (result.route_performance == 'route_early') {
+        result.route_performance = 'Early';
+      } else if (result.route_performance == 'route_ontime') {
+        result.route_performance = 'On-time';
+      } else {
+        result.route_performance = 'Late';
+      }
+
+      console.info(result);
+      result = _extends({}, result, {
+        early_percentage_string: getPercentage(result.early_percentage),
+        ontime_percentage_string: getPercentage(result.ontime_percentage),
+        late_percentage_string: getPercentage(result.late_percentage)
+      });
+      res.render('route_page', { bus: result }); //index.ejs
+    } else {
+      res.render('error_page');
+    }
+  }).catch(function (e) {
+    console.error(e);
+    res.render('error_page');
   });
 };
 

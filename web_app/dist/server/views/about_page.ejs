@@ -1,0 +1,15 @@
+<% var section_head_info = {
+  title: 'About',
+  description: 'Under Construction'
+  }
+%>
+<%- include('header') -%>
+<%- include('navbar') -%>
+<div id="wrapper">
+  <%- include('sidebar') -%>
+  <div id="content-wrapper">
+     <div class="container-fluid">
+      <%- include('section_head', {section_head_info : section_head_info}) -%>
+  </div>
+</div>
+<%- include('footer', {js_name: 'overview.js'}) -%>

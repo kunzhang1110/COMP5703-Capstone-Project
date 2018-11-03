@@ -1,0 +1,38 @@
+<!-- Icon Cards-->
+<div class="row">
+  <!-- Route Title -->
+  <%- include('./title') -%>
+  <div class="col-xl-6 col-sm-12 mb-3">
+    <div class="card text-secondary bg-light o-hidden h-100 ">
+      <div class="card-header">
+        <div class="mr-5">Network</div>
+      </div>
+      <div class="card-body">
+        <div class="card-body-icon">
+          <i class="fas fa-fw fa-comments"></i>
+        </div>
+        <span class="float-left"><%= bus.route_desc %></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-6 col-sm-12 mb-3">
+    <div class="card text-secondary bg-light o-hidden h-100">
+      <div class="card-header">
+        <div class="mr-5">Operator</div>
+      </div>
+      <div class="card-body">
+        <div class="card-body-icon">
+          <i class="fas fa-fw fa-comments"></i>
+        </div>
+        <span class="float-left"><%= bus.agency_name %></span>
+      </div>
+    </div>
+  </div>
+
+  <%- include('./delay') -%>
+
+
+
+
+</div><!-- end of icon cards -->
