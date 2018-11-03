@@ -221,7 +221,7 @@ var stopsSearchHandler = function(stopId){
                         plotShadow: false
                     },
                     title: {
-                        text: "On-time performance: " + data.name,
+                        text: "On-time performance: <br />" + data.name,
                         x: 0
                     },
                     tooltip: {
