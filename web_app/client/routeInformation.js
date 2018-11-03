@@ -70,7 +70,7 @@ function showMap(){
 
 function mapHandler(results){
 	$("#map").html("");
-    $("#stopNames").html("");
+    $("#stops").html("");
     if(results.length == 0){
         return;
     }else{
