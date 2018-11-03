@@ -1,14 +1,22 @@
+<% var section_head_info = {
+  title: 'Bus ' + bus.route_short_name,
+  description: bus.route_long_name
+  }
+%>
+
 <div id="content-wrapper">
    <div class="container-fluid">
      <%- include('./breadcrumb') -%>
+
+     <%- include('../section_head', {section_head_info : section_head_info}) -%>
      <%- include('./cards') -%>
      <%- include('./pie') -%>
 
-     <div class="row">
+     <div class="row my-3">
       	<div class="col-xl-12 col-sm-12 mb-3">
     		<div class="card text-dark border-light o-hidden h-100 shadow">
       			<div class="card-body" style="height: 1200px">
-      			    <h2 class="col-12 mb-3">Stops<button id="routeDirectionButton" value=0 class=" btn ml-4" type="button" style="background-color: #f8f9fa; color: #7cb7e8; border: #7cb7e8">Change Direction</button></h2>
+      			   <h2 class="col-12 mb-3">Stops<button id="routeDirectionButton" value=0 class=" btn ml-4" type="button" style="background-color: #f8f9fa; color: #7cb7e8; border: #7cb7e8">Change Direction</button></h2>
       				<div class="float-left my-2 ml-3 bg-light rounded shadow" style="border:solid #f8f9fa; height: 35%; width: 97%">
       					<div id="stops" class="float-left rounded bg-light " style="height: 100%; width: 50%; overflow-y: scroll"></div>
                     	<div id="stopDelay" class="float-right rounded bg-light " style="height: 100%; width: 50%; text-align: center; display: table-cell; vertical-align: middle"><img src="/stop.jpg" alt="Stop" style="height: 33%; margin-left: -12%; margin-top: 15%; margin-bottom: 15%" /></div>

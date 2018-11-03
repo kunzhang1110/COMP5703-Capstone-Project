@@ -30,7 +30,6 @@ export const getRoute = function () {
 };
 
 
-//TODO: prejoin table
 export const getRouteMap = function (route, direction) {
   let sql = 'select TT_0925_stops.stop_id as stopId, TT_0925_stops.stop_lat as lat, TT_0925_stops.stop_lon as lon, TT_0925_stops.stop_name as name, TT_0925_stop_times.stop_sequence as sequence from (select top 1 TT_0925_routes.route_short_name, TT_0925_trips.trip_id, TT_0925_trips.direction_id from TT_0925_routes join TT_0925_trips on TT_0925_routes.route_id = TT_0925_trips.route_id where TT_0925_routes.route_short_name = @route and TT_0925_trips.direction_id = @direction) as A join TT_0925_stop_times on A.trip_id = TT_0925_stop_times.trip_id join TT_0925_stops on TT_0925_stop_times.stop_id = TT_0925_stops.stop_id order by sequence';
 
