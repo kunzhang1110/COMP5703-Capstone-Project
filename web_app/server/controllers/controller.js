@@ -18,18 +18,35 @@ export const displayPredictivePage = function (req, res){
 
 export const getRoute = function (req, res){
   var route_short_name = req.query.route_short_name;
-  model.getRoute().then( results => {
-    let result = results.find( x => x.route_short_name === route_short_name);
+  model.getRoute().then(results => {
+    if (results!= null){
+      let result = results.find( x => x.route_short_name === route_short_name);
 
-    console.info(result);
-    result = {
-      ...result,
-      early_percentage_string: getPercentage(result.early_percentage),
-      ontime_percentage_string: getPercentage(result.ontime_percentage),
-      late_percentage_string: getPercentage(result.late_percentage),
-    };
-    res.render('route_page',{bus:result}); //index.ejs
-  });
+      if (result.route_performance == 'route_early'){
+        result.route_performance = 'Early';
+      } else if(result.route_performance == 'route_ontime'){
+        result.route_performance = 'On-time';
+      } else{
+        result.route_performance = 'Late';
+      }
+
+
+      console.info(result);
+      result = {
+        ...result,
+        early_percentage_string: getPercentage(result.early_percentage),
+        ontime_percentage_string: getPercentage(result.ontime_percentage),
+        late_percentage_string: getPercentage(result.late_percentage),
+      };
+      res.render('route_page',{bus:result}); //index.ejs
+    }else{
+      res.render('error_page');
+    }
+  }).catch(e=>{
+    console.error(e);
+    res.render('error_page');
+  }
+  );
 };
 
 //
