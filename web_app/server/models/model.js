@@ -46,3 +46,8 @@ export const getStop = function (stopId) {
     .parameter('stopId', TYPES.NVarChar, stopId)
     .execute();
 };
+
+export const getStopStatic = function () {
+  return tp.sql('SELECT * FROM ' + 'dbo.TT_1008_stops')
+    .execute();
+};

@@ -35,7 +35,7 @@ $('#route').text() == '725e'|| $('#route').text() == '699w'){//891, X04 are one-
     $('#routeDirectionButton').attr('disabled', false);
   }
 
-  
+
   $("#routeDirectionButton").mouseenter(function(){
         $("#routeDirectionButton").css("background-color", "#7cb7e8");
         $("#routeDirectionButton").css("color", "#f8f9fa");
@@ -88,7 +88,7 @@ function initMap(response){
     var centerlatLon = new google.maps.LatLng(centerlat, centerlon);
     map = new google.maps.Map(document.getElementById('map'), {zoom: 13, center: centerlatLon});
 
-    
+
     // set circle marker properties
     var circleIcon = {
             path: google.maps.SymbolPath.CIRCLE,
@@ -108,7 +108,7 @@ function initMap(response){
         });
         markers.push(marker);
     });
-    
+
     divideBatch(response, map, markers);
 }
 

@@ -1,6 +1,7 @@
 <% var section_head_info = {
   title: 'About',
-  description: 'Under Construction'
+  description: 'The idea of this project is to gather real-time data from public transport data sources, build appropriate data-model and perform data analysis on the data, and construct a web-application to visualize the results.' +
+  ' The target audiences of the project would be government agencies and bus operators, as well as passengers and developers.'
   }
 %>
 <%- include('header') -%>
@@ -10,6 +11,33 @@
   <div id="content-wrapper">
      <div class="container-fluid">
       <%- include('section_head', {section_head_info : section_head_info}) -%>
+
+      <div class="row">
+        <div class="col-xl-12 col-sm-12 my-3">
+          <div class="card text-secondary bg-white o-hidden h-100 border-light shadow rounded">
+            <div class="card-header">
+              <div class="mr-5">Developer API</div>
+            </div>
+            <div class="card-body">
+              <div>
+                <p>We provide a basic RESTful API allowing developers to access some of our data.</p>
+                <p>To get all route-level analyzed data, use GET method to request:
+                  <a href="./api/getRoute">/api/getRoute</a>
+                </p>
+                <p>To get stop-level analyzed data for a particular stop, use GET method querying with stopId:
+                  <a href="./api/getStop?stopId=2000100">/api/getStop?stopId=2000100</a>
+                </p>
+                <p>To get all static information about a stop (e.g. stopId, location), use GET method to request:
+                  <a href="./api/getStopStatic">/api/getStopStatic</a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
   </div>
 </div>
 <%- include('footer', {js_name: 'overview.js'}) -%>
