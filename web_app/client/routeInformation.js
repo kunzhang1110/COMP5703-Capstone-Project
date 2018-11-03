@@ -50,6 +50,8 @@ $('#route').text() == '725e'|| $('#route').text() == '699w'){//891, X04 are one-
     var direction = $('#routeDirectionButton').val();
     direction = (direction==0) ? 1 : 0;
     $('#routeDirectionButton').val(direction);
+    $('#stopDelay').html("");
+    $('#stopDelay').append('<img src="/stop.jpg" alt="Stop" style="height: 33%; margin-left: -12%; margin-top: 15%; margin-bottom: 15%" />');
     showMap();
   });
 });
@@ -173,8 +175,9 @@ function stopShowHandler(response, markers){
     // create stop labels
     response.forEach(function (data){
         var detailId = "d" + data.stopId;
-        $("#stops").append('<div class="h-30 p-2 mt-2 shadow bg-light" style="opacity: 0.7; color: #000000; font-size: 90%; border: solid #7cb7e8; cursor: pointer" id="' + data.stopId + '">' + data.name + '</div>');
-        $("#stops").append('<div class="h-30 p-2 shadow bg-light" style="opacity: 0.5; color: #000000; font-size: 90%; border-left: solid #7cb7e8; border-right: solid #7cb7e8; border-bottom: solid #7cb7e8" id="' + detailId + '"><span style="cursor: pointer">stop details</span></div>');
+        var detailInfo = "t" + data.stopId;
+        $("#stops").append('<div class=" pt-4 mt-2 text-center font-weight-bold align-middle rounded shadow" style="height: 15%; width: 95%; opacity: 0.7; background-color: #7cb7e8; color: #ffffff; font-size: 90%; cursor: pointer" id="' + data.stopId + '">' + data.name + '</div>');
+        $("#stops").append('<div class=" pt-3 text-center font-weight-bold rounded shadow" style="height: 12%; width: 95%; opacity: 0.5; background-color: #7cb7e8; color: #ffffff; font-size: 90%;" id="' + detailId + '"><span  id="' + detailInfo + '" style="cursor: pointer">stop details</span></div>');
         $("#"+detailId).hide();
         stopClicker(data, markers, infowindow);
     });
@@ -183,12 +186,13 @@ function stopShowHandler(response, markers){
 function stopClicker(data, markers, infowindow){
     $("#"+data.stopId).on("click", function (){
         var detailId = "d" + data.stopId;
+        var detailInfo = "t" + data.stopId;
         var marker = markers[data.sequence-1];
         infowindow.setContent('<div><h5>Stop ' + data.sequence + '</h5><p>' + data.name + '</p>' + '</div>');
         infowindow.open(map, marker);
         if ($('#'+detailId).is(":hidden")) {
             $('#'+detailId).show();
-            $("#"+detailId).on("click", function (){
+            $("#"+detailInfo).on("click", function (){
                 stopsSearchHandler(data.stopId);
             });
         }else{

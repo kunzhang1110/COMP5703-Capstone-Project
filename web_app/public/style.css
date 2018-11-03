@@ -276,3 +276,12 @@ body.sidebar-toggled footer.sticky-footer {
 
 .jumbotron {
   margin: 0; }
+
+::-webkit-scrollbar {
+  width: 20px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #a2cbeb;
+  border-radius: 5px;
+}
