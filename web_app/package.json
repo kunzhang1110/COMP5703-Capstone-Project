@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon --exec babel-node index.js --ignore public/",
     "dev": "webpack --watch --mode development",
-		"prod-server": ".\\node_modules\\.bin\\babel ./server -d .\\dist\\server"
+    "prod-server": "babel ./server -d .\\dist\\server"
   },
   "author": "Kun Zhang",
   "license": "ISC",
