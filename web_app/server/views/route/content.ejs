@@ -1,21 +1,17 @@
 <div id="content-wrapper">
    <div class="container-fluid">
-
      <%- include('./breadcrumb') -%>
      <%- include('./cards') -%>
      <%- include('./pie') -%>
 
      <div class="row">
       	<div class="col-xl-12 col-sm-12 mb-3">
-    		<div class="card text-secondary bg-light o-hidden h-100">
-      			<div class="card-header">
-        			<div class="mr-5">Stops<button id="routeDirectionButton" value=0 class="btn btn-rounded btn-primary my-0" type="button">Change Direction</button></div>
-      			</div>
-      			<div class="card-body" id="mapInfo">
-	  				<div id="stops">
-	  					<div id="stopNames" class=""></div>
-	  				</div>
-      				<div id="map"></div>
+    		<div class="card text-dark border-light o-hidden h-100 shadow">
+      			<div class="card-body" style="height: 1000px">
+      			    <h2 class="col-12 mb-3">Stops<button id="routeDirectionButton" value=0 class=" btn ml-4" type="button" style="background-color: #f8f9fa; color: #7cb7e8; border: #7cb7e8">Change Direction</button></h2>
+	  				<div id="stops" class="float-left my-2 ml-3 bg-light shadow" style="height: 35%; width: 40%; overflow-y: scroll"></div>
+	  				<div id="stopDelay" class="float-right my-2 mr-3 bg-light shadow" style="height: 35%; width: 55%; text-align: center; display: table-cell; vertical-align: middle"><img src="/stop.jpg" alt="Stop" style="height: 33%; margin-top: 15%" /></div>
+      				<div id="map" class="float-left my-2 mx-3 shadow" style="border:solid #f8f9fa; height: 55%; width: 97%"></div>
       			</div>
     		</div>
   		</div>

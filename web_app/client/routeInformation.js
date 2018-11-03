@@ -35,6 +35,16 @@ $('#route').text() == '725e'|| $('#route').text() == '699w'){//891, X04 are one-
     $('#routeDirectionButton').attr('disabled', false);
   }
 
+  
+  $("#routeDirectionButton").mouseenter(function(){
+        $("#routeDirectionButton").css("background-color", "#7cb7e8");
+        $("#routeDirectionButton").css("color", "#f8f9fa");
+  });
+
+  $("#routeDirectionButton").mouseleave(function(){
+        $("#routeDirectionButton").css("background-color", "#f8f9fa");
+        $("#routeDirectionButton").css("color", "#7cb7e8");
+  });
 
   $('#routeDirectionButton').click(function(){
     var direction = $('#routeDirectionButton').val();
@@ -75,26 +85,32 @@ function initMap(response){
     var centerlon = (response[response.length-1].lon + response[0].lon) / 2;
     var centerlatLon = new google.maps.LatLng(centerlat, centerlon);
     map = new google.maps.Map(document.getElementById('map'), {zoom: 13, center: centerlatLon});
+
+    
     // set circle marker properties
     var circleIcon = {
             path: google.maps.SymbolPath.CIRCLE,
-            fillColor: "#00BFFF",
+            fillColor: "#7cb7e8",
             fillOpacity: 1,
             scale: 8,
             strokeColor: '#FFFFFF',
             strokeWeight: 4
     };
-    response.forEach(function (data, index){
+
+    var markers = [];
+    response.forEach(function (data) {
         var marker = new google.maps.Marker({
             map: map,
             position: new google.maps.LatLng(data.lat, data.lon),
             icon: circleIcon
-        })
+        });
+        markers.push(marker);
     });
-    divideBatch(response, map);
+    
+    divideBatch(response, map, markers);
 }
 
-function divideBatch(response, map){
+function divideBatch(response, map, markers){
     var batches = [];
     var itemsPerBatch = 23;
     var itemsCount = 0;
@@ -115,10 +131,10 @@ function divideBatch(response, map){
         batches.push(subBatch);
         itemsCount--;
     }
-    drawRoute(response, map, batches);
+    drawRoute(response, map, batches, markers);
 }
 
-function drawRoute(response, map, batches){
+function drawRoute(response, map, batches, markers){
     for(var k = 0; k < batches.length; k++){
         (function(kk){
             var directionsService = new google.maps.DirectionsService();
@@ -127,7 +143,7 @@ function drawRoute(response, map, batches){
                 preserveViewport: true,
                 suppressMarkers: true,
                 suppressPolylines: false,
-                polylineOptions: {strokeColor: "#00BFFF", strokeOpacity: 1, strokeWeight: 5}
+                polylineOptions: {strokeColor: "#7cb7e8", strokeOpacity: 1, strokeWeight: 5}
             });
             var waypts = batches[k];
             var start = waypts[0].location;
@@ -148,21 +164,36 @@ function drawRoute(response, map, batches){
             });
          })(k);
     }
-    stopShowHandler(response);
+    stopShowHandler(response, markers);
 }
 
-function stopShowHandler(response){
+function stopShowHandler(response, markers){
+    //create stops information window
+    var infowindow = new google.maps.InfoWindow();
     // create stop labels
-    response.forEach(function (data, index){
-        $("#stopNames").append('<div class="stopName" id="' + data.stopId + '">' + data.name + '</div>');
-        stopClicker(data.stopId);
+    response.forEach(function (data){
+        var detailId = "d" + data.stopId;
+        $("#stops").append('<div class="h-30 p-2 mt-2 shadow bg-light" style="opacity: 0.7; color: #000000; font-size: 90%; border: solid #7cb7e8; cursor: pointer" id="' + data.stopId + '">' + data.name + '</div>');
+        $("#stops").append('<div class="h-30 p-2 shadow bg-light" style="opacity: 0.5; color: #000000; font-size: 90%; border-left: solid #7cb7e8; border-right: solid #7cb7e8; border-bottom: solid #7cb7e8" id="' + detailId + '"><span style="cursor: pointer">stop details</span></div>');
+        $("#"+detailId).hide();
+        stopClicker(data, markers, infowindow);
     });
 }
 
-function stopClicker(id){
-    $("#"+id).on("click", function (){
-        var stopId = $(this).attr('id');
-        stopsSearchHandler(stopId);
+function stopClicker(data, markers, infowindow){
+    $("#"+data.stopId).on("click", function (){
+        var detailId = "d" + data.stopId;
+        var marker = markers[data.sequence-1];
+        infowindow.setContent('<div><h5>Stop ' + data.sequence + '</h5><p>' + data.name + '</p>' + '</div>');
+        infowindow.open(map, marker);
+        if ($('#'+detailId).is(":hidden")) {
+            $('#'+detailId).show();
+            $("#"+detailId).on("click", function (){
+                stopsSearchHandler(data.stopId);
+            });
+        }else{
+            $('#'+detailId).hide();
+        }
     });
 }
 
@@ -172,22 +203,69 @@ var stopsSearchHandler = function(stopId){
         url: '/stop?stopId=' + stopId,
         method:'GET',
         success: function (response){
-            $(".stopDelay").remove();
+            $("#stopDelay").html("");
             if(response.length == 0){
                 return;
             }else{
                 // show stop delay information
-                response.forEach(function (data, index){
-                    var percent = data.p * 100;
-                    var percentage = percent.toFixed(2) + "%";
-                    if(new String(data.type) == "early"){
-                        $('<div class="stopDelay"> Early: ' + percentage + '</div>').insertAfter("#"+stopId);
-                    }else if(new String(data.type) == "on time"){
-                        $('<div class="stopDelay"> On Time: ' + percentage + '</div>').insertAfter("#"+stopId);
-                    }else{
-                        $('<div class="stopDelay"> Late: ' + percentage + '</div>').insertAfter("#"+stopId);
+                var data = response[0];
+                Highcharts.chart('stopDelay', {
+                    chart: {
+                        backgroundColor: '#f8f9fa',
+                        plotBackgroundColor: null,
+                        plotBorderWidth: null,
+                        plotShadow: false
+                    },
+                    title: {
+                        text: "On-time performance: " + data.name,
+                        x: 0
+                    },
+                    tooltip: {
+                        headerFormat: '',
+                        pointFormat: '{point.name}: <b>{point.percentage:.2f}%</b>'
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>: {point.percentage:.2f}%',
+                                style: {
+                                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                                }
+                            },
+                            point: {
+                                events: {
+                                    mouseOver: function () {
+                                        this.slice();
+                                    },
+                                    mouseOut: function () {
+                                        this.slice();
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    series: [{
+                        type: 'pie',
+                        colorByPoint: true,
+                        data: [{
+                            name: 'On-time',
+                            y: data.ontime
+                        }, {
+                            name: 'Early',
+                            y: data.early
+                        }, {
+                            name: 'Late',
+                            y: (data.late + data.verylate)
+                        }]
+                    }],
+                    credits: {
+                        enabled: false
                     }
-                })
+                });
+
             }
         }
     })

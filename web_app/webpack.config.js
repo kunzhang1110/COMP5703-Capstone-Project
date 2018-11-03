@@ -6,6 +6,7 @@ module.exports = {
     overview: './client/overview.js',
     routeInformation: './client/routeInformation.js',
     util: './client/util.js',
+    prediction: './client/prediction.js'
   },
   output: {
     path: __dirname + '/public',

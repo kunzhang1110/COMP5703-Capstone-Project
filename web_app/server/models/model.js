@@ -42,7 +42,7 @@ export const getRouteMap = function (route, direction) {
 
 
 export const getStop = function (stopId) {
-  let sql = 'select TT_0925_stops.stop_name as name, stop_delay.delay_desc as type, stop_delay.percentage as p from TT_0925_stops join stop_delay on TT_0925_stops.stop_id = stop_delay.stop_id where TT_0925_stops.stop_id = @stopId';
+  let sql = 'SELECT stop_id, stop_name as name, stop_early_percent as early, stop_ontime_percent as ontime, stop_late_percent as late, stop_very_late_percent as verylate FROM dbo.py15_web_stop_detail where stop_id = @stopId';
   return tp.sql(sql)
     .parameter('stopId', TYPES.NVarChar, stopId)
     .execute();

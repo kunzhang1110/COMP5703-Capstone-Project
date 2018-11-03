@@ -1,6 +1,6 @@
 <% var section_head_info = {
   title: 'Predictive Analysis',
-  description: 'Under Construction'
+  description: 'Predict the on-time performance of one possible route based on our prediction model.'
   }
 %>
 
@@ -11,8 +11,8 @@
   <div id="content-wrapper">
      <div class="container-fluid">
       <%- include('section_head', {section_head_info : section_head_info}) -%>
-
+        <%- include('./prediction') -%>
      </div>
   </div>
 </div>
-<%- include('footer', {js_name: 'overview.js'}) -%>
+<%- include('footer', {js_name: 'prediction.js'}) -%>
