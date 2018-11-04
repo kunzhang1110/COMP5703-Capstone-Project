@@ -20,7 +20,9 @@ SERVER.use(express.static(path.join( __dirname,'..', 'public')));
 SERVER.set('views', path.join(__dirname, 'views'));
 SERVER.set('view engine', 'ejs');
 
-
+SERVER.get('/', (req,res)=>{
+  res.render('index');
+});
 
 SERVER.use('/',router);
 SERVER.use('/api',api_router);

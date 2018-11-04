@@ -2,6 +2,7 @@ var webpack = require('webpack');
 
 module.exports = {
   entry: {
+    index: './client/index.js',
     route: './client/route.js',
     overview: './client/overview.js',
     routeInformation: './client/routeInformation.js',
