@@ -46,7 +46,7 @@ SERVER.set('views', _path2.default.join(__dirname, 'views'));
 SERVER.set('view engine', 'ejs');
 
 SERVER.get('/', function (req, res) {
-  res.render('index');
+  res.render('overview_page');
 });
 
 SERVER.use('/', _router2.default);
