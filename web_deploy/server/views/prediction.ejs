@@ -1,0 +1,23 @@
+<div class="row">
+  <div class="col-xl-12 col-sm-12 mb-3" >
+    <div class="card text-secondary o-hidden h-100 border-light shadow rounded">
+      <div class="card-body">
+        <h2 class="col-12">Predict</h2>
+        <p class="col-12">Input three features of one route</p>
+        <div class="row" id="search-bar">
+          <div class="col-12">
+            <form class="form-inline md-form mr-auto mb-4">
+                    <input id="predict-route-distance" class="form-control ml-5 mr-2 col-3" type="number" min="1" max="100000" placeholder="Enter distance(m) of bus route">
+                    <select id="predict-whether-across-CBD" class="form-control  mr-2 col-3">
+                        <option value="across-CBD">Route across CBD</option>
+                        <option value="not-across-CBD">Route not across CBD</option>
+                    </select>
+                    <input id="predict-total-stops" class="form-control  mr-2 col-3" type="number" min="1" max="1000" placeholder="Enter stops count of bus route">
+                    <div><button id="predict-button"  class="btn my-1 ml-5" style="background-color: #f8f9fa; color: #7cb7e8; border: #7cb7e8">Predict</button></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

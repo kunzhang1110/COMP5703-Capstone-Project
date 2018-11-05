@@ -1,0 +1,7 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}"
+    ],
+    "appService.deploySubpath": "",
+    "appService.defaultWebAppToDeploy": "/subscriptions/8f8b1461-e247-4f05-a5ad-ae928bdc6686/resourceGroups/bus-delay-analysis/providers/Microsoft.Web/sites/bus-delay-analysis"
+}
