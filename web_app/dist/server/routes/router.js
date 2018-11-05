@@ -22,7 +22,7 @@ router.get('/route', controller.displayRouteMainPage);
 router.get('/getRoute', controller.getRoute);
 router.get('/routemap', controller.getRouteMap);
 router.get('/stop', controller.getStop);
-router.get(['/', '/overview'], controller.displayOverviewPage);
+router.get('/overview', controller.displayOverviewPage);
 router.get('/getStopDist', controller.getStopDist);
 router.get('/getTripDist', controller.getTripDist);
 router.get('/getRouteDist', controller.getRouteDist);
