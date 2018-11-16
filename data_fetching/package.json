@@ -15,7 +15,6 @@
     "mocha": "^5.2.0",
     "moment": "^2.22.2",
     "request": "^2.88.0",
-    "sync": "^0.2.5",
     "tedious": "^2.6.4"
   },
   "devDependencies": {
