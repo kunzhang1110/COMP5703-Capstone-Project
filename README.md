@@ -10,7 +10,8 @@ HOW LATE IS TOO LATE FOR A BUS?
 ## Description
 The idea of this project is to gather real-time data from public transport data sources, build appropriate data-model and perform data analysis on the data, and construct an interactive web-application to present the results. The target audiences of the project are government agencies and bus operators, as well as passengers and developers.
 
-More details can be found in Project Final Report.
+* More details can be found in Project Final Report.
+* Some commits are only available on the four branches other than master.
 
 ## Project Structure
 The project consists of three major parts:
