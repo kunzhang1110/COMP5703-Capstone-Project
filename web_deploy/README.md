@@ -7,8 +7,9 @@ The web application can be accessed by ```https://bus-delay-analysis.azurewebsit
 
 Most codes are transcompiled from ES6 to ES5 by babel and repacked by Webpack.
 
+
 ## Environment
 |         | Environment/Language     |
-| ------------- |:-------------:| -----:|
+| ------------- |:-------------:|
 | Web Server |Azure Web Application Service - Node 8.9.1|
-| Web Application | JavaScript (ES6)
+| Web Application | JavaScript (ES6) |

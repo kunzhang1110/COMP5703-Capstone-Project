@@ -7,7 +7,7 @@ Module Documentation can be found under /Documentation. Unit tests are contained
 
 ## Environment
 |         | Language      | Libraries/Tools/Frameworks    |
-| ------------- |:-------------:| -----:|
+| ------------- |:-------------:| -----|
 | Production dependencies|JavaScript (ES5), Transact-SQL | Node, Express, Tedious, Request, GtfsRealtimeBindings |
 | Development tools   | JavaScript (ES5)      | Npm, Jsdoc|
 | Testing tools | JavaScript (ES5)    |Mocha, Chai|

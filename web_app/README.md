@@ -7,7 +7,7 @@ Most codes are written in JavaScript (ES6).
 
 ## Environment
 |         | Language      | Libraries/Tools/Frameworks    |
-| ------------- |:-------------:| -----:|
+| ------------- |:-------------:| -----|
 | Client |HTML, EJS, CSS, SCSS, JavaScript (ES6) | Bootstrap 4, Font-awesome, Google Map API, Google Chart API, jQuery, Popper|
 | Server | JavaScript (ES6) |Node, Express|
 | Database Integration | JavaScript (ES6), Transact-SQL |Tedious|
