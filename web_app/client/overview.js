@@ -8,9 +8,7 @@ const ROUTE_HTML = '<iframe id="igraph" scrolling="no" style="border:none;" seam
 //Google Chart
 GoogleCharts.load('current', {packages: ['corechart']});
 
-//TODO : this is for stop only
 function drawDistColumn(data){
-
 
   let dataArray = new Array();
   dataArray.push(['Date', 'Early', 'On-time', 'Late', 'Very Late']);  //push title

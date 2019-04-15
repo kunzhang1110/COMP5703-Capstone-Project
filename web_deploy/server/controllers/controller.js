@@ -5,8 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.getStop = exports.getRouteMap = exports.getRouteDist = exports.getTripDist = exports.getStopDist = exports.displayOverviewPage = exports.getRoute = exports.displayPredictivePage = exports.displayAboutPage = exports.displayRouteMainPage = undefined;
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 var _model = require('../models/model');
 
 var model = _interopRequireWildcard(_model);
@@ -30,35 +28,49 @@ var displayPredictivePage = exports.displayPredictivePage = function displayPred
 };
 
 var getRoute = exports.getRoute = function getRoute(req, res) {
-  var route_short_name = req.query.route_short_name;
-  model.getRoute().then(function (results) {
-    if (results != null) {
-      var result = results.find(function (x) {
-        return x.route_short_name === route_short_name;
-      });
 
-      if (result.route_performance == 'route_early') {
-        result.route_performance = 'Early';
-      } else if (result.route_performance == 'route_ontime') {
-        result.route_performance = 'On-time';
-      } else {
-        result.route_performance = 'Late';
-      }
+  //Mock Data
+  var result = {
+    route_short_name: req.query.route_short_name,
+    route_long_name: 'Central to Burwood',
+    route_desc: 'Sydney Buses Network',
+    agency_name: 'State Transit Sydney',
+    route_performance: 'On-time',
+    early_percentage_string: getPercentage(Math.random() * 100),
+    ontime_percentage_string: getPercentage(Math.random() * 100),
+    late_percentage_string: getPercentage(Math.random() * 100)
+  };
+  res.render('route_page', { bus: result });
 
-      console.info(result);
-      result = _extends({}, result, {
-        early_percentage_string: getPercentage(result.early_percentage),
-        ontime_percentage_string: getPercentage(result.ontime_percentage),
-        late_percentage_string: getPercentage(result.late_percentage)
-      });
-      res.render('route_page', { bus: result }); //index.ejs
-    } else {
-      res.render('error_page');
-    }
-  }).catch(function (e) {
-    console.error(e);
-    res.render('error_page');
-  });
+  // var route_short_name = req.query.route_short_name;
+  // model.getRoute().then(results => {
+  //   if (results!= null){
+  //     let result = results.find( x => x.route_short_name === route_short_name);
+
+  //     if (result.route_performance == 'route_early'){
+  //       result.route_performance = 'Early';
+  //     } else if(result.route_performance == 'route_ontime'){
+  //       result.route_performance = 'On-time';
+  //     } else{
+  //       result.route_performance = 'Late';
+  //     }
+
+  //     console.info(result);
+  //     result = {
+  //       ...result,
+  //       early_percentage_string: getPercentage(result.early_percentage),
+  //       ontime_percentage_string: getPercentage(result.ontime_percentage),
+  //       late_percentage_string: getPercentage(result.late_percentage),
+  //     };
+  //     res.render('route_page',{bus:result}); 
+  //   }else{
+  //     res.render('error_page');
+  //   }
+  // }).catch(e=>{
+  //   console.error(e);
+  //   res.render('error_page');
+  // }
+  // );
 };
 
 //
@@ -67,69 +79,106 @@ var displayOverviewPage = exports.displayOverviewPage = function displayOverview
 };
 
 var getStopDist = exports.getStopDist = function getStopDist(req, res) {
-  model.getStopDist().then(function (results) {
-    var arrayAll = new Array();
-    results.forEach(function (result, index) {
-      var start_date = new Date(result.start_date);
-      var dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
-      var start_date_localeString = start_date.toLocaleString('en-US', dateOptions);
-      var start_date_string = start_date_localeString.slice(5, 11) + '\n' + start_date_localeString.slice(0, 3);
-      var array = [start_date_string, result.early, result.on_time, result.late, result.Very_late];
-      arrayAll.push(array);
-    });
 
-    res.send(arrayAll); //JSON format
-  });
+  //Mock Data
+  var arrayAll = new Array();
+  for (var i = 0; i < 15; i++) {
+    var start_date = new Date(2019, 10, i);
+    var dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+    var start_date_localeString = start_date.toLocaleString('en-US', dateOptions);
+    var start_date_string = start_date_localeString.slice(5, 11) + '\n' + start_date_localeString.slice(0, 3);
+    var array = [start_date_string, Math.random() * 1000, Math.random() * 1000 + 5000, Math.random() * 1000, Math.random() * 1000];
+    arrayAll.push(array);
+  }
+  res.send(arrayAll); //JSON format
+
+  // model.getStopDist().then(results => {
+  //   var arrayAll= new Array();
+  //   results.forEach(function(result,index){
+  //     let start_date = new Date(result.start_date);
+  //     let dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+  //     let start_date_localeString = start_date.toLocaleString('en-US', dateOptions);
+  //     let start_date_string = start_date_localeString.slice(5,11)+'\n' +start_date_localeString.slice(0,3);
+  //     let array = [start_date_string, result.early, result.on_time, result.late, result.Very_late];
+  //     arrayAll.push(array);
+  //   });
+  //   res.send(arrayAll);  //JSON format
+  // });
 };
 
 var getTripDist = exports.getTripDist = function getTripDist(req, res) {
-  model.getTripDist().then(function (results) {
-    var arrayAll = new Array();
-    results.forEach(function (result, index) {
-      var start_date = new Date(result.start_date);
-      var dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
-      var start_date_localeString = start_date.toLocaleString('en-US', dateOptions);
-      var start_date_string = start_date_localeString.slice(5, 11) + '\n' + start_date_localeString.slice(0, 3);
-      var array = [start_date_string, result.trip_early, result.trip_ontime, result.trip_late, 0];
-      arrayAll.push(array);
-    });
 
-    res.send(arrayAll); //JSON format
-  });
+  //Mock Data
+  var arrayAll = new Array();
+  for (var i = 0; i < 15; i++) {
+    var start_date = new Date(2019, 10, i);
+    var dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+    var start_date_localeString = start_date.toLocaleString('en-US', dateOptions);
+    var start_date_string = start_date_localeString.slice(5, 11) + '\n' + start_date_localeString.slice(0, 3);
+    var array = [start_date_string, Math.random() * 1000, Math.random() * 1000 + 5000, Math.random() * 1000, Math.random() * 1000];
+    arrayAll.push(array);
+  }
+  res.send(arrayAll); //JSON format
+
+  // model.getTripDist().then(results => {
+  //   var arrayAll= new Array();
+  //   results.forEach(function(result,index){
+  //     let start_date = new Date(result.start_date);
+  //     let dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+  //     let start_date_localeString = start_date.toLocaleString('en-US', dateOptions);
+  //     let start_date_string = start_date_localeString.slice(5,11)+'\n' +start_date_localeString.slice(0,3);
+  //     let array = [start_date_string, result.trip_early, result.trip_ontime, result.trip_late, 0];
+  //     arrayAll.push(array);
+  //   });
+
+  //   res.send(arrayAll);  //JSON format
+  // });
 };
 
 var getRouteDist = exports.getRouteDist = function getRouteDist(req, res) {
-  model.getRouteDist().then(function (results) {
-    var arrayAll = new Array();
-    results.forEach(function (result, index) {
-      var start_date = new Date(result.start_date);
-      var dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
-      var start_date_localeString = start_date.toLocaleString('en-US', dateOptions);
-      var start_date_string = start_date_localeString.slice(5, 11) + '\n' + start_date_localeString.slice(0, 3);
-      var array = [start_date_string, result.route_early, result.route_ontime, result.route_late, 0];
+  //Mock Data
+  var arrayAll = new Array();
+  for (var i = 0; i < 15; i++) {
+    var start_date = new Date(2019, 10, i);
+    var dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+    var start_date_localeString = start_date.toLocaleString('en-US', dateOptions);
+    var start_date_string = start_date_localeString.slice(5, 11) + '\n' + start_date_localeString.slice(0, 3);
+    var array = [start_date_string, Math.random() * 1000, Math.random() * 1000 + 5000, Math.random() * 1000, Math.random() * 1000];
+    arrayAll.push(array);
+  }
+  res.send(arrayAll); //JSON format
 
-      // //remove the last day
-      // if(index != (results.length-1)){
-      //   arrayAll.push(array);
-      // }
+  // model.getRouteDist().then(results => {
+  //   var arrayAll= new Array();
+  //   results.forEach(function(result,index){
+  //     let start_date = new Date(result.start_date);
+  //     let dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+  //     let start_date_localeString = start_date.toLocaleString('en-US', dateOptions);
+  //     let start_date_string = start_date_localeString.slice(5,11)+'\n' +start_date_localeString.slice(0,3);
+  //     let array = [start_date_string, result.route_early, result.route_ontime, result.route_late, 0];
 
-      //keep all days
-      arrayAll.push(array);
-    });
+  //     // //remove the last day
+  //     // if(index != (results.length-1)){
+  //     //   arrayAll.push(array);
+  //     // }
 
-    res.send(arrayAll); //JSON format
-  });
+  //     //keep all days
+  //     arrayAll.push(array);
+  //   });
+
+  //   res.send(arrayAll);  //JSON format
+  // });
 };
 
 var getRouteMap = exports.getRouteMap = function getRouteMap(req, res) {
-  var route = req.query.route;
-  var direction = req.query.direction;
-  model.getRouteMap(route, direction).then(function (results) {
-    // console.info(results);
-    res.send(results);
-  }).catch(function (error) {
-    return console.error(error);
-  });
+  var results = [{ lat: 37.772, lng: -122.214 }, { lat: 21.291, lng: -157.821 }, { lat: -18.142, lng: 178.431 }, { lat: -27.467, lng: 153.027 }];
+  res.send(results);
+  // var route = req.query.route;
+  // var direction = req.query.direction;
+  // model.getRouteMap(route, direction).then(results => {
+  //   // console.info(results);
+  //   res.send(results);
+  // }).catch(error => console.error(error));
 };
 
 var getStop = exports.getStop = function getStop(req, res) {
